@@ -1,0 +1,295 @@
+---
+title: "A Musical Introduction to Generators"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{A Musical Introduction to Generators}
+  %\VignetteEncoding{UTF-8}
+---
+
+# A Musical Introduction to Generators
+
+What a generator allows you to do is to take code that is writen in
+a sequential, looping style, and then treat that code's output as
+a collection to be iterated over.
+
+To illustrate what this means, and the the generators package in
+general, I will use R to perform a suitable piece of music,
+specifically Steve Reich's "Clapping Music."
+
+The piece is starts with a loop counting out groups of 3, 2, 1, 2, 3,
+2, 1, 2, 3... with each group seperated by one rest. This adds up to a
+12-note loop:
+
+![Musical score showing loop](clapping_music.svg)
+
+In code, we could implement that idea like the following, printing a
+`1` for each clap and a `0` for each rest:
+
+```{R}
+print_pattern <- function(counts = c(3, 2, 1, 2), repeats=4) {
+  for (i in seq_len(repeats)) {
+    for (c in counts) {
+        for (j in 1:c)
+          cat(1)
+        cat(0)
+    }
+  }
+  cat("\n")
+}
+```
+
+Testing this, we should see groups of 1, 2, or 3 `1`s separated by a single `0`:
+```{R}
+print_pattern(repeats=4);
+```
+
+"Clapping Music" is based on manipulating this 12-count loop. But it's hard to
+manipulate the output of a program that only prints. The calls
+to `cat` produce output on the terminal, but they don't produce data
+that we can easily manipulate with more programming -- we need to make
+this pattern into data, rather than terminal output.
+
+The `generators` package allows us to enclose a data-generating process into an
+object.
+
+To make a generator for this patter, we just enclose the body of the
+function in a call to `gen()`, and change each `cat()` to `yield()`.
+
+```{R}
+library(async) # for gen
+gen_pattern <- function(counts = c(3, 2, 1, 2)) { force(counts)
+  gen({
+    repeat {
+      for (n in counts) {
+        for (j in 1:n)
+          yield(1)
+        yield(0)
+      }
+    }
+  })
+}
+```
+
+Adding `force(counts)` is a good idea because of R's lazy evaluation +
+mutable bindings.  A generator captures its environment like an inner
+function, so it's a good idea to fix the value of `counts` before the
+outer function returns; this is the same as if you return an inner
+function that uses arguments to an outer function. Meanwhile, fixing
+the number of `repeats` ahead of time is no longer necessary; a
+generator can be in principle infinite and it will only generate data
+as long as you keep requesting more.
+
+The code inside `gen(...)` does not run, yet. The call to `gen`
+constructs an
+[iterator][iterators::iterators-package],
+which supports the method `nextElem`. When `nextElem()` is called on a
+generator, the generator runs its code only up to the point where
+`yield` is called. The generator returns this value, and pauses state
+until the next call to `nextElem()`.
+
+```{R}
+library(iterators)
+p <- gen_pattern()
+for (i in 1:23) { cat(nextElem(p)) }; cat("\n")
+```
+
+`gen(...)` constructs and returns an
+[iterator](https://CRAN.R-project.org/package=iterators),
+which means you can apply iterator methods to it. For instance you can collect
+just the first 24 items with `ilimit()`:
+
+```{R}
+library(magrittr)
+show_head <- function(x, n=24) {
+  x %>% itertools::ilimit(n) %>% as.list() %>% deparse() %>% cat(sep="\n")
+}
+show_head(gen_pattern(), 24)
+```
+
+## Making noise
+
+We're a good way into what I advertised as a musical endeavour and
+haven't made any sounds yet. First let's download some handclap
+samples. I located some on GitHub:
+
+```{R, eval=FALSE}
+tmp <- tempdir()
+baseurl <- "https://github.com/octoblu/drum-kit/raw/master/public/assets/samples"
+samplepaths <- paste0(tmp, c("x" = "/clap4.wav","X" = "/clap5.wav"))
+curl::curl_download(paste0(baseurl, "/clap%20(4).WAV"), samplepaths[1])
+curl::curl_download(paste0(baseurl, "/clap%20(5).WAV"), samplepaths[2])
+```
+
+Although R is not known for audio performance, there is an `audio`
+package playing sound samples, which we can use like this:
+
+```{R, eval=FALSE}
+library(audio) # for load.wave, play
+claps <- lapply(samplepaths, load.wave)
+play(claps[[1]])
+play(claps[[2]])
+```
+
+We want to play sounds at a consistent tempo, so here's a routine that
+takes in a generator and a sample list, and plays at a given
+tempo. The `profvis` package has a `pause` function that's more
+accurate than `Sys.sleep()`.
+
+```r
+library(profvis) # for pause
+iplay <- function(g, samples, bpm) {
+  interval <- 60 / bpm
+  target <- Sys.time()
+  tryCatch(
+    repeat {
+      x <- nextElem(g)
+      target <- target + interval
+      while({now <- Sys.time(); Sys.time() - now > 0.15})
+        Sys.sleep(target - now - 0.15)
+      if (is.numeric(x) && x >= 1 && x <= length(samples)) {
+        cat(x)
+        pause(target - Sys.time())
+        play(samples[[x]])
+      } else {
+        cat(".")
+      }
+    },
+    error=function(e) {
+      if (identical(conditionMessage(e), 'StopIteration'))
+        invisible(NULL)
+      else stop(e)
+    })
+}
+```
+
+So we should hear our pattern now:
+
+```{R, eval=FALSE}
+gen_pattern() %>% itertools::ilimit(36) %>% iplay(claps, 360)
+```
+
+### Some iterator functions
+
+Here's a couple of utility functions that will come in handy. One
+is an iterator equivalent of `lapply` for iterators, which I'll call
+`iapply`. The other one is `isink` which just consumes all elements
+from an iterator.
+
+```r
+iapply <- function(it, f, ...) { list(it, f, ...)
+  itertools::new_iterator(function() {
+    f(nextElem(it), ...)
+  })
+}
+
+isink <- function(it, then=invisible(NULL)) {
+  tryCatch(
+    repeat {nextElem(it)},
+    error=function(e) {
+      if (!identical(conditionMessage(e), 'StopIteration'))
+        stop(e)
+    })
+ then
+}
+```
+
+### Some iterator functions using generators
+
+Note that in a generator, you can write a `for` loop with an iterator
+in the argument. So we can equivalently write `iapply` and `isink` like this:
+
+```r
+iapply <- function(it, f, ...) { list(it, f, ...)
+  gen({
+    for (x in it) yield(f(x, ...))
+  })
+}
+```
+
+```r
+isink <- function(it, then=NULL) {
+  gen({
+    for (i in it) next
+    yield(then)
+  }) %>% nextElem() %>% invisible()
+}
+```
+
+For example, run an iterator through `iapply(cat)` and `isink` to print it:
+
+```r
+g <- gen_pattern() |> itertools::ilimit(24) |> iapply(cat) |> isink(cat("\n"))
+```
+
+## Phasing and combining
+
+"Clapping Music" is a piece for two performers, who both play the same
+pattern, but after every 12 loops, one of the performers skips forward
+by one step. Over the course of the piece, the two parts move out and
+back into in phase with each other. We can write a generator function
+that does this "skip," by consuming a value without yielding it:
+
+```{R}
+drop_one_after <- function(g, n, sep=character(0)) {  list(g, n, sep)
+  gen(
+    repeat {
+      for (i in 1:n) yield(nextElem(g))
+      nextElem(g) #drop
+      cat(sep) # print a seperator after every skip
+    }
+  )
+}
+```
+
+Here's a count from one to 12, skipping after three (i.e. skipping every fourth):
+
+```r
+iterators::icount() %>%
+itertools::ilimit(12) %>%
+drop_one_after(3, "\n") %>%
+iapply(cat, "") %>%
+isink()
+```
+
+The performance directions for "Clapping Music" request that the two
+performers should make their claps sound similar, so that their lines
+blend into an overall pattern. We can interpret that as combining the
+two lines by adding two generators, resulting in 0, 1, or 2 claps at
+every step, playing the louder sample for a value of 2.
+
+Then, all together:
+
+```r
+clapping_music <- function(n=12, counts=c(3,2,1,2), sep=" ") {
+  cell <- sum(counts+1) # how long?
+  a <- gen_pattern(counts)
+  b <- gen_pattern(counts) %>% drop_one_after(n*cell, sep)
+  # add them together and limit the output
+  gen(for (i in 1:(n*(cell+1)*cell)) {
+    yield(nextElem(a) + nextElem(b))
+  })
+}
+```
+
+To narrate this: we are constructing two independent instances of our
+12-note generator. One of these patterns is made to skip one beat every N
+bars. Then we create a third generator that adds together the two.
+
+```r
+clapping_music(4, sep="\n") %>% iapply(cat) %>% isink(cat("\n"))
+```
+
+## A performance
+
+Now we should be able to hear our performance
+
+```{r, eval=FALSE}
+iplay(clapping_music(n=4, sep="\n"), claps, 480)
+```
+
+R is definitely not a multimedia environment, plus the `audio` package
+is using the OS alert sound facility, which is not really meant for
+precise timing, so you may hear some glitches and hiccups. Nevertheless,
+I hope this has illustrated how generators allows control to be
+_interleaved_ among different sequential processes.
