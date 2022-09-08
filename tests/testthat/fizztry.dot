@@ -1,0 +1,138 @@
+digraph "G" { 
+  bgcolor = "lightgray"
+  margin = "0"
+  pad = "0.25"
+  concentrate = "false"
+  nodesep = "0.3"
+  ranksep = "0.4"
+  newrank = "true"
+  clusterrank = "local"
+  packmode = "clust"
+  labeljust = "l"
+  fontname = "DejaVu Sans Mono Book"
+  rankdir = "TB"
+  fontsize = "14"
+  edge [fontname="DejaVu Sans Bold", arrowhead="normal", arrowsize="0.6", fontsize="8"]
+  node [fontname="DejaVu Sans Bold", margin="0.1,0.1", shape="box", bgcolor="white", height="0.2", width="0.2", color="gray60", penwidth="2"]
+  "..do_expr" [label="i <- nextElem(seq)", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.1" [shape="circle", style="filled", color="gray70", fixedsize="true", width="0.25", height="0.25", label=";"]
+  "..do_expr.2" [label="i%%3 == 0", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3" [label="if_", style="filled,rounded", color="gray70"]
+  "..do_expr.3.ifFalse" [label="i%%5 == 0", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3.ifFalse.1" [label="if_", style="filled,rounded", color="gray70"]
+  "..do_expr.3.ifFalse.1.ifTrue" [label="\"Buzz\"", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3.ifFalse.1.ifTrue.1" [label="yield_", style="filled,rounded", color="gray70"]
+  "..do_expr.3.ifTrue" [label="i%%5 == 0", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3.ifTrue.1" [label="if_", style="filled,rounded", color="gray70"]
+  "..do_expr.3.ifTrue.1.ifFalse" [label="\"Fizz\"", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3.ifTrue.1.ifFalse.1" [label="yield_", style="filled,rounded", color="gray70"]
+  "..do_expr.3.ifTrue.1.ifTrue" [label="\"FizzBuzz\"", fontname="DejaVu Sans Mono Bold", style="filled", fontcolor="lightgreen", fontsize="13", color="gray20", labeljust="l", nojustify="true"]
+  "..do_expr.3.ifTrue.1.ifTrue.1" [label="yield_", style="filled,rounded", color="gray70"]
+  subgraph "cluster1_ctx...do_expr.3.ifTrue.1.ifTrue.1.yield" { 
+    margin = "6"
+    style = "invis"
+    subgraph "cluster_ctx...do_expr.3.ifTrue.1.ifTrue.1.yield" { 
+      label = ""
+      shape = "box"
+      style = "rounded"
+      bgcolor = "gray85"
+      margin = "12"
+      penwidth = "1"
+      color = "gray75"
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield" [label="yield_", style="filled,rounded", color="gray70"]
+      "nextElemOr" [label="nextElemOr_", style="filled,rounded", color="gray70"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var" [shape="record", label="<err>err|<nonce>nonce|<state>state|<yielded>yielded", fontsize="11", fontname="DevaVu Sans Mono Bold", margin="0.08"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":err -> "nextElemOr" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":nonce -> "nextElemOr" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":state -> "nextElemOr" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":yielded -> "nextElemOr" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "nextElemOr" -> "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":state [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "nextElemOr" -> "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":yielded [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield" -> "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":state [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield" -> "ctx...do_expr.3.ifTrue.1.ifTrue.1.yield_var":yielded [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+    }
+  }
+  "..do_expr.3.ifTrue.1.ifTrue.2" [label="repeat_", style="filled,rounded", color="gray70"]
+  subgraph "cluster1_ctx...do_expr.3.ifTrue.1.ifTrue.2.ret" { 
+    margin = "6"
+    style = "invis"
+    subgraph "cluster_ctx...do_expr.3.ifTrue.1.ifTrue.2.ret" { 
+      label = ""
+      shape = "box"
+      style = "rounded"
+      bgcolor = "gray85"
+      margin = "12"
+      penwidth = "1"
+      color = "gray75"
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield.pause" [label="pause_", style="filled,rounded", color="gray70"]
+      "..do_expr.3.ifTrue.1.ifTrue.2.ret" [label="ret_", style="filled,rounded", color="gray70"]
+      "..windup" [label="windup_", style="filled,rounded", color="gray70"]
+      "RETURN" [label="return_", style="filled,rounded", color="gray70", shape="doubleoctagon", color="darkblue", style="filled", fontcolor="lightblue", margin="0,0", fixedsize="false"]
+      "STOP" [label="stop_", style="filled,rounded", color="gray70", shape="doubleoctagon", color="darkred", style="filled", fontcolor="pink", margin="0,0", fixedsize="false"]
+      "pump" [label="pump", style="filled,rounded", color="gray70"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var" [shape="record", label="<action>action|<cont>cont|<err>err|<nonce>nonce|<runPump>runPump|<value>value|<verbose>verbose|<windings>windings", fontsize="11", fontname="DevaVu Sans Mono Bold", margin="0.08"]
+      "RETURN" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "RETURN" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":value [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":verbose -> "..do_expr.3.ifTrue.1.ifTrue.1.yield.pause" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield.pause" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.1.yield.pause" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":cont [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":verbose -> "..windup" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":windings -> "..windup" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..windup" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..windup" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":cont [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..windup" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":windings [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action -> "pump" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":nonce -> "pump" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":runPump -> "pump" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":value -> "pump" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "pump" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "STOP" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "STOP" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":err [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":verbose -> "..do_expr.3.ifTrue.1.ifTrue.2.ret" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.2.ret" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":action [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "..do_expr.3.ifTrue.1.ifTrue.2.ret" -> "ctx...do_expr.3.ifTrue.1.ifTrue.2.ret_var":cont [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+    }
+  }
+  subgraph "cluster1_ctx.START" { 
+    margin = "6"
+    style = "invis"
+    subgraph "cluster_ctx.START" { 
+      label = ""
+      shape = "box"
+      style = "rounded"
+      bgcolor = "gray85"
+      margin = "12"
+      penwidth = "1"
+      color = "gray75"
+      "START" [label="try_", style="filled,rounded", color="gray70", shape="doubleoctagon", color="darkgreen", style="filled", fontcolor="lightgreen", margin="0,0", fixedsize="false", pos="1,1"]
+      "ctx.START_var" [shape="record", label="<do_windup>do_windup|<result>result", fontsize="11", fontname="DevaVu Sans Mono Bold", margin="0.08"]
+      "ctx.START_var":do_windup -> "START" [penwidth="1", color="slateblue3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+      "START" -> "ctx.START_var":result [penwidth="1", color="orange3", arrowsize="0.5", arrowhead="dot", concentrate="true", constrain="false"]
+    }
+  }
+  "..do_expr" -> "..do_expr.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.1" -> "..do_expr.2" [taillabel="", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.2" -> "..do_expr.3" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3" -> "..do_expr.3.ifFalse" [taillabel="ifFalse", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3" -> "..do_expr.3.ifTrue" [taillabel="ifTrue", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifFalse" -> "..do_expr.3.ifFalse.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifFalse.1" -> "..do_expr.3.ifFalse.1.ifTrue" [taillabel="ifTrue", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifFalse.1" -> "..do_expr.3.ifTrue.1.ifTrue.2" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifFalse.1.ifTrue" -> "..do_expr.3.ifFalse.1.ifTrue.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifFalse.1.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifTrue.1.yield" [taillabel="yield", color="black", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+  "..do_expr.3.ifFalse.1.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifTrue.2" [taillabel="", color="black", style="dashed", penwidth="2.5", constrain="false", concentrate="false", arrowhead="odot", taillabel=" ", labelangle="0", fontsize="15", arrowsize="2.25", labeldistance="0.9", fontcolor="blue", headlabel="⏸", labeldistance="0.8"]
+  "..do_expr.3.ifTrue" -> "..do_expr.3.ifTrue.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifFalse" [taillabel="ifFalse", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifTrue" [taillabel="ifTrue", color="gray50", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifTrue.1.ifFalse" -> "..do_expr.3.ifTrue.1.ifFalse.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifTrue.1.ifFalse.1" -> "..do_expr.3.ifTrue.1.ifTrue.1.yield" [taillabel="yield", color="black", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+  "..do_expr.3.ifTrue.1.ifFalse.1" -> "..do_expr.3.ifTrue.1.ifTrue.2" [taillabel="", color="black", style="dashed", penwidth="2.5", constrain="false", concentrate="false", arrowhead="odot", taillabel=" ", labelangle="0", fontsize="15", arrowsize="2.25", labeldistance="0.9", fontcolor="blue", headlabel="⏸", labeldistance="0.8"]
+  "..do_expr.3.ifTrue.1.ifTrue" -> "..do_expr.3.ifTrue.1.ifTrue.1" [taillabel="", color="black", arrowhead="normal", penwidth="2", concentrate="true"]
+  "..do_expr.3.ifTrue.1.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifTrue.1.yield" [taillabel="yield", color="black", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+  "..do_expr.3.ifTrue.1.ifTrue.1" -> "..do_expr.3.ifTrue.1.ifTrue.2" [taillabel="", color="black", style="dashed", penwidth="2.5", constrain="false", concentrate="false", arrowhead="odot", taillabel=" ", labelangle="0", fontsize="15", arrowsize="2.25", labeldistance="0.9", fontcolor="blue", headlabel="⏸", labeldistance="0.8"]
+  "..do_expr.3.ifTrue.1.ifTrue.1.yield" -> "..do_expr.3.ifTrue.1.ifTrue.1.yield.pause" [taillabel="", color="gray50", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+  "..do_expr.3.ifTrue.1.ifTrue.2" -> "..do_expr" [taillabel="begin", color="gray50", style="dashed", penwidth="2.5", constrain="false", concentrate="false", arrowhead="odot", taillabel=" ", labelangle="0", fontsize="15", arrowsize="2.25", labeldistance="0.9", fontcolor="blue", headlabel="⮍"]
+  "..do_expr.3.ifTrue.1.ifTrue.2" -> "..do_expr.3.ifTrue.1.ifTrue.2.ret" [taillabel="ret", color="gray50", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+  "START" -> "..do_expr" [taillabel="do_expr", color="gray50", style="dashed", penwidth="2.5", constrain="false", concentrate="false", arrowhead="odot", taillabel=" ", labelangle="0", fontsize="15", arrowsize="2.25", labeldistance="0.9", fontcolor="blue", headlabel="⤽", fontsize="20"]
+  "START" -> "..windup" [taillabel="windup", color="black", penwidth="0.75", arrowhead="dot", arrowsize="0.3", concentrate="true", constrain="false"]
+}

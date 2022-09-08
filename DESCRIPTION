@@ -1,7 +1,7 @@
 Package: async
 Title: Asynchronous Code Constructs: Generators, Yield, Async, Await
-Version: 0.2.1
-Date: 2022-05-15
+Version: 0.2.2
+Date: 2022-09-07
 Authors@R: 
     person(given = "Peter",
            family = "Meilstrup",
@@ -24,12 +24,12 @@ Depends: R (>= 3.5.0)
 Imports: nseval (>= 0.4), iterators, itertools, later, promises
 Suggests: rmarkdown, testthat (>= 3.0.0), knitr, magrittr, audio,
         profvis, covr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2022-05-25 05:52:07 UTC; peter
+Packaged: 2022-09-08 06:40:51 UTC; peter
 Author: Peter Meilstrup [aut, cre]
 Maintainer: Peter Meilstrup <peter.meilstrup@gmail.com>
 Repository: CRAN
-Date/Publication: 2022-05-26 08:30:02 UTC
+Date/Publication: 2022-09-08 07:02:55 UTC
