@@ -105,13 +105,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -554,8 +561,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb27-5" title="5">)</a>
 <a class="sourceLine" id="cb27-6" title="6"><span class="kw">summary</span>(bench)[, <span class="kw">c</span>(<span class="st">&quot;expr&quot;</span>, <span class="st">&quot;median&quot;</span>)]</a></code></pre></div>
 <pre><code>##                                                        expr   median
-## 1 as.list(gen(for (i in iterators::iter(1:1000)) yield(i))) 260.5873
-## 2          as.list(gen(for (i in iteror(1:1000)) yield(i))) 183.4703</code></pre>
+## 1 as.list(gen(for (i in iterators::iter(1:1000)) yield(i))) 185.7828
+## 2          as.list(gen(for (i in iteror(1:1000)) yield(i))) 107.8385</code></pre>
 <p>Part of the difference comes from the fact that <code>gen</code> must use a <code>tryCatch</code> for each time to calls <code>nextElem</code> on an <code>iterator</code>. Whereas calling <code>nextOr</code> on an <code>iteror</code> does not involve many calls to <code>tryCatch</code>.</p>
 </div>
 </div>

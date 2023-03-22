@@ -1,3 +1,5 @@
+trace_ <- function(x) if (getOption("async.verbose")) cat(x)
+
 munge <- function(# the async/generator to munge
                   g,
                   # What is the destination env?  In the interpreted
@@ -223,4 +225,3 @@ move_value.default <- function(graph, contextName, varName, dest.env, newName,
     rm(list=varName, envir=graph$contexts[[contextName]])
   dest.env[[newName]] <- value
 }
-

@@ -279,3 +279,8 @@ debugAsync(ctz, internal=TRUE)
     ## 
     ## $internal
     ## [1] TRUE
+    ## 
+    ## $trace
+    ## function(x) NULL
+    ## <bytecode: 0x5623b830ef58>
+    ## <environment: 0x5623b83ebaf8>

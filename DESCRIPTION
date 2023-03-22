@@ -1,7 +1,7 @@
 Package: async
 Title: Coroutines: Generators / Yield, Async / Await, and Streams
-Version: 0.3
-Date: 2023-01-23
+Version: 0.3.1
+Date: 2023-03-01
 Authors@R: 
     person(given = "Peter",
            family = "Meilstrup",
@@ -32,13 +32,13 @@ Collate: 'async-package.R' 'util.R' 'iteror.R' 'cps.R' 'signals.R'
         'syntax.R' 'coroutine.R' 'pump.R' 'run.R' 'gen.R' 'async.R'
         'channel.R' 'stream.R' 'collect.R' 'all_names.R' 'walk.R'
         'all_indices.R' 'graph.R' 'trans.R' 'munge.R'
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 NeedsCompilation: no
-Packaged: 2023-02-20 23:37:15 UTC; peter
+Packaged: 2023-03-22 04:46:52 UTC; peter
 Author: Peter Meilstrup [aut, cre]
 Maintainer: Peter Meilstrup <peter.meilstrup@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-02-21 00:00:02 UTC
+Date/Publication: 2023-03-22 09:10:08 UTC

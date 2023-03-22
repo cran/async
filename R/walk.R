@@ -103,7 +103,7 @@ walk <- function(gen, forGraph=FALSE) {
   nameOverrides <- list2env(structure(as.list(names(nodeStartNames)), names=nodeStartNames))
   nodeOrder <- names(nodes)
   nodes <- list2env(nodes, parent=emptyenv())
-  orig <- getOrig(gen)
+  orig <- summary(gen)$code
   iter <- iseq()
   nodeProperties <- new.env(parent=emptyenv())
   reverseEdges <- new.env(parent=emptyenv())
@@ -256,7 +256,7 @@ find_local_name <- function(fun) {
   name
 }
 
-find_global_name <- function(fun, nameOverrides) {
+find_global_name <- function(fun, nameOverrides=emptyenv()) {
   if (is.null(name <- attr(fun, "globalName"))) {
     name <- paste0(get0(".contextName", environment(fun)),
                    "__", find_local_name(fun))
