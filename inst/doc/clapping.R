@@ -15,6 +15,7 @@ print_pattern(repeats=4);
 
 ## -----------------------------------------------------------------------------
 library(async)
+library(iterors)
 counts <- c(3, 2, 1, 2)
 pattern <- gen({
   repeat {
@@ -45,7 +46,7 @@ gen_pattern <- gen(function(counts = c(3, 2, 1, 2)) {
 
 ## -----------------------------------------------------------------------------
 show_head <- function(x, n=24) {
-  x |> ilimit(n) |> as.list() |> deparse() |> cat(sep="\n")
+  x |> as.list(n=n) |> deparse() |> cat(sep="\n")
 }
 show_head(gen_pattern(), 24)
 
@@ -63,7 +64,7 @@ show_head(gen_pattern(), 24)
 #  play(claps[[2]])
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  gen_pattern() |> ilimit(36) |> iplay(claps, 360)
+#  gen_pattern() |> i_limit(36) |> iplay(claps, 360)
 
 ## -----------------------------------------------------------------------------
 iapply <- function(it, f, ...) { list(it, f, ...)
@@ -78,7 +79,7 @@ isink <- function(it, then=invisible(NULL)) {
 }
 
 ## -----------------------------------------------------------------------------
-g <- gen_pattern() |> ilimit(24) |> iapply(cat) |> isink(cat("\n"))
+g <- gen_pattern() |> i_limit(24) |> iapply(cat) |> isink(cat("\n"))
 
 ## -----------------------------------------------------------------------------
 gapply <- gen(function(it, f, ...) for (x in it) yield(f(x, ...)) )
@@ -95,7 +96,7 @@ drop_one_after <- gen(function(g, n, sep=character(0)) {
 
 ## -----------------------------------------------------------------------------
 iseq() |>
-ilimit(12) |>
+i_limit(12) |>
 drop_one_after(3, "\n") |>
 iapply(cat, "") |>
 isink()

@@ -58,10 +58,10 @@ file_dataset <- async({
           tryCatch(read_json(filename), error=goto("txt"))
       },
       "zip"= {
-          unzipped <- unzip(filename)
-          on.exit(unlink(unzipped))
-          unzip(filename)
-          goto() # i.e. run getExtension on the new filename
+        unzipped <- unzip_async(filename) |> await()
+        filename <- unzipped
+        on.exit(unlink(unzipped))
+        goto(getExtension(unzipped))
       }
   )
 })
@@ -110,12 +110,4 @@ for (j in 1:10) nextOr(g, break)
 finished
 nextOr(g, "stop")
 finished
-
-## -----------------------------------------------------------------------------
-bench <- microbenchmark::microbenchmark(
-  as.list(gen(for (i in iterators::iter(1:1000)) yield(i))),
-  as.list(gen(for (i in iteror(1:1000)) yield(i))),
-  times=10
-)
-summary(bench)[, c("expr", "median")]
 

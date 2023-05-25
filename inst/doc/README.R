@@ -90,6 +90,6 @@ async:::wait_for_it()
 #  ctz <- collatz(23)
 #  graphAsync(ctz, type="svg") #creates a file "ctz.svg"
 
-## -----------------------------------------------------------------------------
-debugAsync(ctz, internal=TRUE)
+## ----eval=FALSE---------------------------------------------------------------
+#  debugAsync(ctz, internal=TRUE)
 
